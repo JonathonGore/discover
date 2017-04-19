@@ -7,28 +7,22 @@ import java.util.List;
  */
 public class EventManager {
     private static EventManager em = null;
+    private IEventDao eventDao;
     //private DiscoverDAO discoverDAO = null;
 
-    public static EventManager getInstance() {
-        if(em == null) {
-            em = new EventManager();
-        }
-        return em;
-    }
-
-    private EventManager() {
-        //discoverDAO = DiscoverDAO.getInstance();
+    public EventManager(IEventDao eventDao) {
+        this.eventDao = eventDao;
     }
 
     public Event createEvent(String eventAsJSON) {
         Gson gson = new Gson();
-        Event e =  gson.fromJson(eventAsJSON, Event.class);
+        Event event =  gson.fromJson(eventAsJSON, Event.class);
         // Put into database
-        return e;
+        eventDao.insertEvent(event);
+        return event;
     }
 
     public List<Event> getEvents() {
-       //return discoverDAO.getEvents();
-        return null;
+       return eventDao.getEvents();
     }
 }

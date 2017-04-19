@@ -52,7 +52,12 @@ public class Server {
 
     // Constructor
     private Server() {
-        eventManager = EventManager.getInstance();
+        /*TODO: Instead of passing in null we must pass in the appropriate client
+     *          for retrieving data. This will be elastic search client
+         */
+
+        eventManager = new EventManager(null);
+
         gson = new Gson();
         // Try to create the server otherwise throw
         try {
