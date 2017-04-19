@@ -1,0 +1,5 @@
+.idea/**
+discover.iml
+out/**
+target/**
+*.swp
