@@ -7,7 +7,7 @@ import java.util.List;
  */
 public class EventManager {
     private static EventManager em = null;
-    private DiscoverDAO discoverDAO = null;
+    //private DiscoverDAO discoverDAO = null;
 
     public static EventManager getInstance() {
         if(em == null) {
@@ -17,7 +17,7 @@ public class EventManager {
     }
 
     private EventManager() {
-        discoverDAO = DiscoverDAO.getInstance();
+        //discoverDAO = DiscoverDAO.getInstance();
     }
 
     public Event createEvent(String eventAsJSON) {
@@ -28,6 +28,7 @@ public class EventManager {
     }
 
     public List<Event> getEvents() {
-       return discoverDAO.getEvents();
+       //return discoverDAO.getEvents();
+        return null;
     }
 }
