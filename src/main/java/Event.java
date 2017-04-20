@@ -20,6 +20,8 @@ public class Event {
     private final long createdAt;
     private final long beginsAt;
     private final long endsAt;
+    private final long latitude;
+    private final long longitude;
 
     private final List<AdminPerson> admins;
     private final List<HostPerson> hosts;
@@ -35,25 +37,13 @@ public class Event {
         this.admins = eb.admins;
         this.hosts = eb.hosts;
         this.attendees = eb.attendees;
+        this.latitude = eb.latitude;
+        this.longitude = eb.longitude;
     }
 
     public String toString() {
         Gson gson = new Gson();
         return gson.toJson(this);
-    }
-
-    /**
-     * Creates a query used for inserting event into database
-     * @return The formatted query
-     */
-    public String toInsertQuery() {
-        return String.format("INSERT INTO `discover`.`events` (`event_id`, `name`, `duration`," +
-                        " `created_at`, `begins_at`, `ends_at`, `hosts`, `admins`, `attendees`) VALUES (" +
-                        "'%s', '%s', '%s', <{created_at: }>, <{begins_at: }>, <{ends_at: }>," +
-                        " <{hosts: }>, <{admins: }>, <{attendees: }>);", "f4ffkkljer" /* replace with event id */,
-                getName(), getDuration(), getCreatedAt(), getBeginsAt(),
-                getEndsAt(), getHosts().toString(), getAdmins().toString(),
-                getAttendees().toString());
     }
 
     // For now because toString and toJSON might change and don't want them to be dependant on each other
@@ -74,6 +64,10 @@ public class Event {
 
     public long getEndsAt() { return this.endsAt; }
 
+    public long getLongitude() { return this.longitude; }
+
+    public long getLatitude() { return this.latitude; }
+
     public List<AdminPerson> getAdmins() { return this.admins; }
 
     public List<HostPerson> getHosts() { return this.hosts; }
@@ -91,6 +85,8 @@ public class Event {
         private long createdAt;
         private long beginsAt;
         private long endsAt;
+        private long latitude;
+        private long longitude;
 
         private List<AdminPerson> admins;
         private List<HostPerson> hosts;
@@ -111,6 +107,8 @@ public class Event {
             this.createdAt = event.getCreatedAt();
             this.beginsAt = event.getBeginsAt();
             this.endsAt = event.getEndsAt();
+            this.longitude = event.getLongitude();
+            this.latitude = event.getLatitude();
         }
 
         // Setters
@@ -152,6 +150,12 @@ public class Event {
 
         public EventBuilder setAttendees(List<NormalPerson> attendees) {
             this.attendees = attendees;
+            return this;
+        }
+
+        public EventBuilder setPosition(long latitude, long longitude) {
+            this.latitude = latitude;
+            this.longitude = longitude;
             return this;
         }
 
