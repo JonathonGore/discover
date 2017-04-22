@@ -3,6 +3,7 @@ import com.google.gson.reflect.TypeToken;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
+import com.typesafe.config.ConfigFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -58,11 +59,9 @@ public class Server {
 
     // Constructor
     private Server() {
-        /*TODO: Instead of passing in null we must pass in the appropriate client
-         *      for retrieving data. This will be elastic search client
-         */
 
-        eventManager = new EventManager(new ElasticDataClient());
+        // Pass in the config. This can eventually be changed to have different files
+        eventManager = new EventManager(new ElasticDataClient(ConfigFactory.load()));
 
         gson = new Gson();
         // Try to create the server otherwise throw
@@ -71,7 +70,6 @@ public class Server {
         } catch (IOException ex) {
             throw new RuntimeException("Unable to create server shutting down...");
         }
-
     }
 
     /**
