@@ -52,3 +52,24 @@ f0cba90e21fd        discover_logstash        "/usr/local/bin/do..."   15 hours a
 57931532c616        discover_elasticsearch   "/bin/bash bin/es-..."   15 hours ago        Up 5 minutes        0.0.0.0:9200->9200/tcp, 0.0.0.0:9300->9300/tcp   discover_elasticsearch_1
 ```
 
+## Important Note
+
+Currently our docker-machine instance is configured to use 2GB of memory. This number may increase in the future. When this machine is running it reserves the entire 2GB of memory, so if we want to free up this memory when not developing we muct stop the machine. This can easily be done. Simply run the following:
+
+`docker-machine stop discover`
+
+This will stop the machine and free up the allocated memory. This will also stop all running docker containers. So when you
+are ready to develop again we must restart and activate our docker-machine and restart our ELK stack. This can be acheived by running the following:
+
+`docker-machine start discover`
+Then one of the following:
+
+`eval "$(docker-machine env discover)"`
+
+OR
+
+`source ~/.profile` Since the above line was added to our profile when running the setup script.
+
+Then start the ELK stack again by running:
+
+`docker-compose up -d`
