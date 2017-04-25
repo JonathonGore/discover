@@ -65,7 +65,7 @@ VBoxManage controlvm discover natpf1 "kibana,tcp,127.0.0.1,5601,,5601" 2> /dev/n
 cat ~/.profile | grep 'eval "$(docker-machine env discover)"' > /dev/null
 if [ $? -eq 1 ]
  then
-	echo 'eval "$(docker-machine env discover)"' >> ~/.profile
+	echo 'eval "$(docker-machine env discover)" 2> /dev/null' >> ~/.profile
 fi
 
 
