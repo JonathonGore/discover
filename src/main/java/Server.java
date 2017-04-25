@@ -11,6 +11,7 @@ import java.io.IOException;
 import java.lang.reflect.Type;
 import java.net.InetSocketAddress;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by jack on 2017-03-18.
@@ -20,6 +21,9 @@ public class Server {
 
     private static final String HTTP_POST = "POST";
     private static final String HTTP_GET = "GET";
+
+    private final Type T_LIST_OF_EVENTS = new TypeToken<List<Event>>(){}.getType();
+    private final Type T_EVENT = new TypeToken<Event>(){}.getType();
 
     private static Logger logger = LogManager.getLogger(Server.class);
     private static Server server = null;
@@ -97,10 +101,23 @@ public class Server {
          * Handles a GET request for the events endpoint
          * @return the String that is to be used as the response
          */
-        private String handleGET() {
+        private String handleGET(HttpExchange t) {
+            String response;
+            String query = t.getRequestURI().getQuery();
             logger.info("Received get request at /events");
-            Type listType = new TypeToken<List<Event>>() {}.getType();
-            String response = gson.toJson(eventManager.getEvents(), listType);
+            // Convert query to map
+            Map<String, String> values = Utilities.queryToMap(query);
+            logger.info("Finished converting");
+            // Check if it contains id parameter
+            if(values.containsKey("id")) {
+                logger.info("Contains id key");
+                String id = values.get("id");
+                logger.info("got id key");
+                Event event = eventManager.getEvent(id);
+                response = gson.toJson(event, T_EVENT);
+            } else {
+                response = gson.toJson(eventManager.getEvents(), T_LIST_OF_EVENTS);
+            }
             logger.info("Sending response: {}", response);
             return response;
         }
@@ -126,7 +143,7 @@ public class Server {
                 response = handlePOST(t);
 
             } else if(HTTP_GET.equalsIgnoreCase(requestType)) {
-                response = handleGET();
+                response = handleGET(t);
             }
             ResponseWriter.write(t, new Response(200, response));
         }

@@ -25,4 +25,6 @@ public class EventManager {
     public List<Event> getEvents() {
        return eventDao.getEvents();
     }
+
+    public Event getEvent(String id) { return eventDao.getEvent(id); }
 }

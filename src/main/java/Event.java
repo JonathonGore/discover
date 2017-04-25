@@ -1,4 +1,7 @@
 import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
+
+import java.lang.reflect.Type;
 import java.util.List;
 
 /**
@@ -14,6 +17,8 @@ import java.util.List;
  */
 public class Event {
 
+    private static final Type T_EVENT = new TypeToken<Event>(){}.getType();
+
     private String name;
     private String duration;
 
@@ -26,6 +31,12 @@ public class Event {
     private final List<AdminPerson> admins;
     private final List<HostPerson> hosts;
     private final List<NormalPerson> attendees;
+
+    public static Event eventFromJSON(String json) {
+        Gson gson = new Gson();
+        Event e = gson.fromJson(json, T_EVENT);
+        return e;
+    }
 
     private Event(EventBuilder eb) {
 
@@ -42,6 +53,7 @@ public class Event {
     }
 
     public String toString() {
+        // TODO Make one static GSON instance
         Gson gson = new Gson();
         return gson.toJson(this);
     }

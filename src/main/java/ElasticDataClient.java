@@ -1,7 +1,9 @@
+
 import com.typesafe.config.Config;
-import com.typesafe.config.ConfigFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.elasticsearch.action.get.GetResponse;
+import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
@@ -68,11 +70,32 @@ public class ElasticDataClient implements IEventDao {
     }
 
     /**
+     * Gets the event with the corresponding eventId from elasticsearch
+     * @param id The id of the request Event
+     * @return the requested Event or null
+     */
+    public Event getEvent(String id) {
+        // TODO: Export this to configuration
+        GetResponse response = client.prepareGet("event-catalogue", "event", id).get();
+        logger.info("Retrieved event {} from elasticsearch", response.getSourceAsString());
+        return Event.eventFromJSON(response.getSourceAsString());
+    }
+
+    /**
      * Inserts the given event into ElasticSearch
      * @param event: the event to insert into ElasticSearch
      * @return whether or not the insertion was successful
      */
     public boolean insertEvent(Event event) {
+        logger.info("Inserting event into elasticsearch");
+        // TODO: .setSource is deprecated change it to something not deprecated
+        // TODO: export type and index name to configuration file
+        // Paramaters are (index name, type, id)
+        // TODO: add 'event id' to event class so we can index events based on their id
+        //IndexResponse response = client.prepareIndex("event-catalogue", "event", event.getId())
+        IndexResponse response = client.prepareIndex("event-catalogue", "event")
+                .setSource(event.toJSON())
+                .get();
         return true;
     }
 }
