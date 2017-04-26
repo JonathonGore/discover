@@ -1,7 +1,7 @@
-
 import com.typesafe.config.Config;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.client.transport.TransportClient;
@@ -21,6 +21,7 @@ public class ElasticDataClient implements IEventDao {
 
     private static final Logger logger = LogManager.getLogger(ElasticDataClient.class);
     private static final String ES_PREFIX = "es.";
+    private static final String DELETED = "DELETED";
 
     private final Config config;
     private TransportClient client = null;
@@ -75,10 +76,22 @@ public class ElasticDataClient implements IEventDao {
      * @return the requested Event or null
      */
     public Event getEvent(String id) {
-        // TODO: Export this to configuration
-        GetResponse response = client.prepareGet("event-catalogue", "event", id).get();
+        GetResponse response = client.prepareGet(config.getString(ES_PREFIX + "index"),
+                config.getString(ES_PREFIX + "type"), id).get();
         logger.info("Retrieved event {} from elasticsearch", response.getSourceAsString());
         return Event.eventFromJSON(response.getSourceAsString());
+    }
+
+    /**
+     * Deletes the Event with the corresponding id if it exists
+     * @param id The id of the Event to delete
+     * @return true if an event was delete, false otherwise
+     */
+    public boolean deleteEvent(String id) {
+        // TODO: Get if the delete was successful and return that instead of just false
+        DeleteResponse response = client.prepareDelete(config.getString(ES_PREFIX + "index"),
+                config.getString(ES_PREFIX + "type"), id).get();
+        return DELETED.equals(response.getResult().toString());
     }
 
     /**
@@ -87,13 +100,14 @@ public class ElasticDataClient implements IEventDao {
      * @return whether or not the insertion was successful
      */
     public boolean insertEvent(Event event) {
+        // TODO: Return if the insertion event was successful or not
         logger.info("Inserting event into elasticsearch");
         // TODO: .setSource is deprecated change it to something not deprecated
-        // TODO: export type and index name to configuration file
         // Paramaters are (index name, type, id)
         // TODO: add 'event id' to event class so we can index events based on their id
         //IndexResponse response = client.prepareIndex("event-catalogue", "event", event.getId())
-        IndexResponse response = client.prepareIndex("event-catalogue", "event")
+        IndexResponse response = client.prepareIndex(config.getString(ES_PREFIX + "index"),
+                config.getString(ES_PREFIX + "type"))
                 .setSource(event.toJSON())
                 .get();
         return true;

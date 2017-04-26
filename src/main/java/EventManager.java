@@ -27,4 +27,6 @@ public class EventManager {
     }
 
     public Event getEvent(String id) { return eventDao.getEvent(id); }
+
+    public boolean deleteEvent(String id) { return eventDao.deleteEvent(id); }
 }

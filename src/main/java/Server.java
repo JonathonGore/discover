@@ -21,6 +21,7 @@ public class Server {
 
     private static final String HTTP_POST = "POST";
     private static final String HTTP_GET = "GET";
+    private static final String HTTP_DELETE = "DELETE";
 
     private final Type T_LIST_OF_EVENTS = new TypeToken<List<Event>>(){}.getType();
     private final Type T_EVENT = new TypeToken<Event>(){}.getType();
@@ -104,19 +105,39 @@ public class Server {
         private String handleGET(HttpExchange t) {
             String response;
             String query = t.getRequestURI().getQuery();
-            logger.info("Received get request at /events");
+            logger.info("Received GET request at /events");
             // Convert query to map
             Map<String, String> values = Utilities.queryToMap(query);
-            logger.info("Finished converting");
             // Check if it contains id parameter
             if(values.containsKey("id")) {
-                logger.info("Contains id key");
                 String id = values.get("id");
-                logger.info("got id key");
                 Event event = eventManager.getEvent(id);
                 response = gson.toJson(event, T_EVENT);
             } else {
                 response = gson.toJson(eventManager.getEvents(), T_LIST_OF_EVENTS);
+            }
+            logger.info("Sending response: {}", response);
+            return response;
+        }
+
+        /**
+         * Handles a DELETE request for the events endpoint
+         * @return the String that is to be used as the response
+         */
+        private String handleDELETE(HttpExchange t) {
+            String response;
+            String query = t.getRequestURI().getQuery();
+            logger.info("Received DELETE request at /events");
+            // Convert query to map
+            Map<String, String> values = Utilities.queryToMap(query);
+            // Check if it contains id parameter
+            if(values.containsKey("id")) {
+                String id = values.get("id");
+                boolean successful = eventManager.deleteEvent(id);
+                response = (successful) ? "Deleted event" : "Event did not exist";
+            } else {
+                logger.error("Malformed request {}", query);
+                response = "Malformed Request";
             }
             logger.info("Sending response: {}", response);
             return response;
@@ -136,14 +157,16 @@ public class Server {
 
         @Override
         public void handle(HttpExchange t) throws IOException {
+            // TODO: Change to respond with proper response codes
             String response = "";
             // Get body from http request
             String requestType = getRequestType(t);
             if(HTTP_POST.equalsIgnoreCase(requestType)) {
                 response = handlePOST(t);
-
             } else if(HTTP_GET.equalsIgnoreCase(requestType)) {
                 response = handleGET(t);
+            } else if(HTTP_DELETE.equalsIgnoreCase(requestType)) {
+                response = handleDELETE(t);
             }
             ResponseWriter.write(t, new Response(200, response));
         }

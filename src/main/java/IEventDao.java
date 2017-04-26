@@ -13,6 +13,12 @@ public interface IEventDao {
      */
     Event getEvent(String eventId);
 
+    /**
+     * Deletes the event with the corresponding eventId
+     * if it exists.
+     */
+    boolean deleteEvent(String eventId);
+
     // Insert an event
     boolean insertEvent(Event event);
 }
