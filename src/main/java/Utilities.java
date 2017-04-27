@@ -31,7 +31,7 @@ public class Utilities {
     public static Map<String, String> queryToMap(String query){
         Map<String, String> result = new HashMap<>();
         // TODO: Make this below line better
-        if(query == null) return result;
+        if(query == null || query.isEmpty()) return result;
         for (String param : query.split("&")) {
             String pair[] = param.split("=");
             if (pair.length>1) {
