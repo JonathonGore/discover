@@ -4,6 +4,7 @@ import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
 import com.sun.net.httpserver.HttpServer;
 import com.typesafe.config.ConfigFactory;
+import org.apache.http.HttpStatus;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -102,21 +103,25 @@ public class Server {
          * Handles a GET request for the events endpoint
          * @return the String that is to be used as the response
          */
-        private String handleGET(HttpExchange t) {
-            String response;
+        private Response handleGET(HttpExchange t) {
+            Response response;
             String query = t.getRequestURI().getQuery();
             logger.info("Received GET request at /events");
-            // Convert query to map
             Map<String, String> values = Utilities.queryToMap(query);
             // Check if it contains id parameter
             if(values.containsKey("id")) {
+                // For now we only want to support GET for a single id
                 String id = values.get("id");
                 Event event = eventManager.getEvent(id);
-                response = gson.toJson(event, T_EVENT);
+                String responseMessage = gson.toJson(event, T_EVENT);
+                response = new Response(HttpStatus.SC_OK, responseMessage);
             } else {
-                response = gson.toJson(eventManager.getEvents(), T_LIST_OF_EVENTS);
+                // If we get here that means there was no ID provided
+                //response = gson.toJson(eventManager.getEvents(), T_LIST_OF_EVENTS);
+                response = new Response(HttpStatus.SC_BAD_REQUEST, "Specify an id in request URI");
+
             }
-            logger.info("Sending response: {}", response);
+            logger.info("Sending response: Status: {} Message: {}", response.getStatusCode(), response.getMessage());
             return response;
         }
 
@@ -124,8 +129,8 @@ public class Server {
          * Handles a DELETE request for the events endpoint
          * @return the String that is to be used as the response
          */
-        private String handleDELETE(HttpExchange t) {
-            String response;
+        private Response handleDELETE(HttpExchange t) {
+            Response response;
             String query = t.getRequestURI().getQuery();
             logger.info("Received DELETE request at /events");
             // Convert query to map
@@ -134,10 +139,11 @@ public class Server {
             if(values.containsKey("id")) {
                 String id = values.get("id");
                 boolean successful = eventManager.deleteEvent(id);
-                response = (successful) ? "Deleted event" : "Event did not exist";
+                String responseMessage = (successful) ? "Deleted event" : "Event did not exist";
+                response = new Response(HttpStatus.SC_OK, responseMessage);
             } else {
-                logger.error("Malformed request {}", query);
-                response = "Malformed Request";
+                logger.error("Malformed DELETE request received at /events {}", query);
+                response = new Response(HttpStatus.SC_BAD_REQUEST, "Malformed Request");
             }
             logger.info("Sending response: {}", response);
             return response;
@@ -148,12 +154,12 @@ public class Server {
          * Used for inserting a new event into the Datastore
          * @return the String that is to be used as the response
          */
-        private String handlePOST(HttpExchange t) {
+        private Response handlePOST(HttpExchange t) {
             // Convert Body of the Http request to string
             String body = Utilities.toString(t.getRequestBody());
             logger.info("Received post request at /events. With body {}", body);
             eventManager.createEvent(body);
-            return "Created event successfully";
+            return new Response(HttpStatus.SC_OK, "Created event successfully");
         }
 
         /**
@@ -164,7 +170,7 @@ public class Server {
         @Override
         public void handle(HttpExchange t) throws IOException {
             // TODO: Change to respond with proper response codes
-            String response = "";
+            Response response = null;
             // Get body from http request
             String requestType = getRequestType(t);
             if(HTTP_POST.equalsIgnoreCase(requestType)) {
@@ -174,7 +180,7 @@ public class Server {
             } else if(HTTP_DELETE.equalsIgnoreCase(requestType)) {
                 response = handleDELETE(t);
             }
-            ResponseWriter.write(t, new Response(200, response));
+            ResponseWriter.write(t, response);
         }
     }
 }

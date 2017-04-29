@@ -16,6 +16,8 @@ public class EventManager {
         this.eventDao = eventDao;
     }
 
+
+    // TODO: Not sure if it makes sense to return the inserted event, lets change this to a boolean throughout
     /**
      * Creates a new event and inserts into our datastore
      * @param eventAsJSON The event to create as JSON
