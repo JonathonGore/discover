@@ -6,7 +6,6 @@ import java.util.List;
  * Created by jack on 2017-03-19.
  */
 public class EventManager {
-    private static EventManager em = null;
     private IEventDao eventDao;
 
     /**

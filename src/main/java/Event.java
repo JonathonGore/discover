@@ -54,6 +54,43 @@ public class Event {
         this.longitude = eb.longitude;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Event event = (Event) o;
+
+        if (createdAt != event.createdAt) return false;
+        if (beginsAt != event.beginsAt) return false;
+        if (endsAt != event.endsAt) return false;
+        if (latitude != event.latitude) return false;
+        if (longitude != event.longitude) return false;
+        if (name != null ? !name.equals(event.name) : event.name != null) return false;
+        if (duration != null ? !duration.equals(event.duration) : event.duration != null) return false;
+        if (eventID != null ? !eventID.equals(event.eventID) : event.eventID != null) return false;
+        if (admins != null ? !admins.equals(event.admins) : event.admins != null) return false;
+        if (hosts != null ? !hosts.equals(event.hosts) : event.hosts != null) return false;
+        return attendees != null ? attendees.equals(event.attendees) : event.attendees == null;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = name != null ? name.hashCode() : 0;
+        result = 31 * result + (duration != null ? duration.hashCode() : 0);
+        result = 31 * result + (eventID != null ? eventID.hashCode() : 0);
+        result = 31 * result + (int) (createdAt ^ (createdAt >>> 32));
+        result = 31 * result + (int) (beginsAt ^ (beginsAt >>> 32));
+        result = 31 * result + (int) (endsAt ^ (endsAt >>> 32));
+        result = 31 * result + (int) (latitude ^ (latitude >>> 32));
+        result = 31 * result + (int) (longitude ^ (longitude >>> 32));
+        result = 31 * result + (admins != null ? admins.hashCode() : 0);
+        result = 31 * result + (hosts != null ? hosts.hashCode() : 0);
+        result = 31 * result + (attendees != null ? attendees.hashCode() : 0);
+        return result;
+    }
+
     public String toString() {
         // TODO Make one static GSON instance
         Gson gson = new Gson();

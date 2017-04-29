@@ -16,6 +16,14 @@ public class Utilities {
     }
 
     /**
+     * Gets the current time since EPOCH in milliseconds.
+     * @return the time in milliseconds
+     */
+    public static Long getCurrentTime() {
+        return System.currentTimeMillis();
+    }
+
+    /**
      * Converts input stream to a string
      * @param is: The input stream to convert
      * @return

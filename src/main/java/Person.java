@@ -16,6 +16,25 @@ public class Person {
         this.personType = pb.personType;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Person person = (Person) o;
+
+        if (userUUID != null ? !userUUID.equals(person.userUUID) : person.userUUID != null) return false;
+        return personType == person.personType;
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = userUUID != null ? userUUID.hashCode() : 0;
+        result = 31 * result + (personType != null ? personType.hashCode() : 0);
+        return result;
+    }
+
     public String getUserUUID() {
         return this.userUUID;
     }
