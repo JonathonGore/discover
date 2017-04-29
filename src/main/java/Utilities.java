@@ -1,6 +1,7 @@
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 /**
  * Created by jack on 2017-03-17.
@@ -8,9 +9,10 @@ import java.util.Map;
 public class Utilities {
     /**
      * Generates a UUID
+     * @return the generated UUID
      */
     public static String generateUUID() {
-        return "";
+        return UUID.randomUUID().toString();
     }
 
     /**

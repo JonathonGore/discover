@@ -144,7 +144,8 @@ public class Server {
         }
 
         /**
-         * Handles a POST request for the events endpoint
+         * Handles a POST request for the /events endpoint
+         * Used for inserting a new event into the Datastore
          * @return the String that is to be used as the response
          */
         private String handlePOST(HttpExchange t) {
@@ -155,6 +156,11 @@ public class Server {
             return "Created event successfully";
         }
 
+        /**
+         * Handles a request made to the /events endpoints and routes it according the HTTP request type
+         * @param t the received Http Request
+         * @throws IOException
+         */
         @Override
         public void handle(HttpExchange t) throws IOException {
             // TODO: Change to respond with proper response codes

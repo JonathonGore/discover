@@ -72,7 +72,7 @@ public class ElasticDataClient implements IEventDao {
 
     /**
      * Gets the event with the corresponding eventId from elasticsearch
-     * @param id The id of the request Event
+     * @param id The id of the requested Event
      * @return the requested Event or null
      */
     public Event getEvent(String id) {
@@ -104,10 +104,10 @@ public class ElasticDataClient implements IEventDao {
         logger.info("Inserting event into elasticsearch");
         // TODO: .setSource is deprecated change it to something not deprecated
         // Paramaters are (index name, type, id)
-        // TODO: add 'event id' to event class so we can index events based on their id
-        //IndexResponse response = client.prepareIndex("event-catalogue", "event", event.getId())
-        IndexResponse response = client.prepareIndex(config.getString(ES_PREFIX + "index"),
-                config.getString(ES_PREFIX + "type"))
+        IndexResponse response = client.prepareIndex(
+                config.getString(ES_PREFIX + "index"),
+                config.getString(ES_PREFIX + "type"),
+                event.getEventID())
                 .setSource(event.toJSON())
                 .get();
         return true;

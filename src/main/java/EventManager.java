@@ -8,16 +8,24 @@ import java.util.List;
 public class EventManager {
     private static EventManager em = null;
     private IEventDao eventDao;
-    //private DiscoverDAO discoverDAO = null;
 
+    /**
+     * Creates a new event dao
+     * @param eventDao The object that will act as a datastore
+     */
     public EventManager(IEventDao eventDao) {
         this.eventDao = eventDao;
     }
 
+    /**
+     * Creates a new event and inserts into our datastore
+     * @param eventAsJSON The event to create as JSON
+     * @return the newly created event
+     */
     public Event createEvent(String eventAsJSON) {
         Gson gson = new Gson();
-        Event event =  gson.fromJson(eventAsJSON, Event.class);
-        // Put into database
+        Event event = gson.fromJson(eventAsJSON, Event.class);
+        // Put into datastore
         eventDao.insertEvent(event);
         return event;
     }

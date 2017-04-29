@@ -21,6 +21,7 @@ public class Event {
 
     private String name;
     private String duration;
+    private String eventID;
 
     private final long createdAt;
     private final long beginsAt;
@@ -42,6 +43,7 @@ public class Event {
 
         this.name = eb.name;
         this.duration = eb.duration;
+        this.eventID = eb.eventID;
         this.createdAt = eb.createdAt;
         this.beginsAt = eb.beginsAt;
         this.endsAt = eb.endsAt;
@@ -70,6 +72,8 @@ public class Event {
 
     public String getDuration() { return this.duration; }
 
+    public String getEventID() { return this.eventID; }
+
     public long getCreatedAt() { return this.createdAt; }
 
     public long getBeginsAt() { return this.beginsAt; }
@@ -94,6 +98,7 @@ public class Event {
 
         private String name;
         private String duration;
+        private String eventID;
         private long createdAt;
         private long beginsAt;
         private long endsAt;
@@ -116,6 +121,7 @@ public class Event {
             // Use getters to update EventBuilder with all fields from the event..
             this.name = event.getName();
             this.duration = event.getDuration();
+            this.eventID = event.getEventID();
             this.createdAt = event.getCreatedAt();
             this.beginsAt = event.getBeginsAt();
             this.endsAt = event.getEndsAt();
@@ -125,47 +131,103 @@ public class Event {
 
         // Setters
 
+        /**
+         * Sets the name of this event
+         * @param name The name of this event.
+         * @return The updated EventBuilder
+         */
         public EventBuilder setName(String name) {
             this.name = name;
             return this;
         }
 
+        /**
+         * Sets the duration for this event in a human readable form i.e 3 hours, 1 day ... etc.
+         * @param duration The duration of this event.
+         * @return The updated EventBuilder
+         */
         public EventBuilder setDuration(String duration) {
             this.duration = duration;
             return this;
         }
 
+        /**
+         * Sets the eventID for this event.
+         * @param eventID The event id for this event as a UUID.
+         * @return The updated EventBuilder
+         */
+        public EventBuilder setEventID(String eventID) {
+            this.eventID = eventID;
+            return this;
+        }
+
+        /**
+         * Sets the time this event was created at.
+         * @param createdAt The time this event was created at in UNIX time.
+         * @return The updated EventBuilder
+         */
         public EventBuilder setCreatedAt(long createdAt) {
             this.createdAt = createdAt;
             return this;
         }
 
+        /**
+         * Sets the time this event will begin.
+         * @param beginsAt The time this event will begin in UNIX time.
+         * @return The updated EventBuilder
+         */
         public EventBuilder setBeginsAt(long beginsAt) {
             this.beginsAt = beginsAt;
             return this;
         }
 
+        /**
+         * Sets the time this event will end.
+         * @param endsAt The time this event will end in UNIX time.
+         * @return The updated EventBuilder
+         */
         public EventBuilder setEndsAt(long endsAt) {
             this.endsAt = endsAt;
             return this;
         }
 
+        /**
+         * Sets the admins for this event
+         * @param admins The list of people who have admin capabilities for this event.
+         * @return The updated EventBuilder
+         */
         public EventBuilder setAdmins(List<AdminPerson> admins) {
             this.admins = admins;
             return this;
         }
 
+        /**
+         * Sets the hosts for this event
+         * @param hosts The list of people hosting the event.
+         * @return The updated EventBuilder
+         */
         public EventBuilder setHost(List<HostPerson> hosts) {
             this.hosts = hosts;
             return this;
         }
 
+        /**
+         * Sets the attendees of this event
+         * @param attendees The list of attendees that will be at this event.
+         * @return The updated EventBuilder
+         */
         public EventBuilder setAttendees(List<NormalPerson> attendees) {
             this.attendees = attendees;
             return this;
         }
 
-        public EventBuilder setPosition(long latitude, long longitude) {
+        /**
+         * Sets the geographical location of this event
+         * @param latitude The latitude coordinate of the location
+         * @param longitude The longitude coordinate of the location
+         * @return The updated EventBuilder
+         */
+        public EventBuilder setCoordinates(long latitude, long longitude) {
             this.latitude = latitude;
             this.longitude = longitude;
             return this;
