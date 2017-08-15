@@ -53,6 +53,7 @@ docker-machine start ${box_name}
 VBoxManage controlvm ${box_name} natpf1 "elasticsearch,tcp,127.0.0.1,9200,,9200" 2> /dev/null
 VBoxManage controlvm ${box_name} natpf1 "elasticsearch-internal,tcp,127.0.0.1,9300,,9300" 2> /dev/null
 VBoxManage controlvm ${box_name} natpf1 "logstash,tcp,127.0.0.1,5000,,5000" 2> /dev/null
+VBoxManage controlvm ${box_name} natpf1 "logstash-http,tcp,127.0.0.1,31311,,31311" 2> /dev/null
 VBoxManage controlvm ${box_name} natpf1 "kibana,tcp,127.0.0.1,5601,,5601" 2> /dev/null
 
 # this command allows the docker commands to be used in the terminal
