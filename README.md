@@ -72,4 +72,4 @@ OR
 
 Then start the ELK stack again by running:
 
-`docker-compose up -d`
+`docker-compose up --build -d`

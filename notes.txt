@@ -1,0 +1,2 @@
+TODO: Note in the application.conf the strange ip address, that is the address for the docker-machine on my local
+host I want that to be able to use 0.0.0.0

@@ -55,6 +55,7 @@ VBoxManage controlvm ${box_name} natpf1 "elasticsearch-internal,tcp,127.0.0.1,93
 VBoxManage controlvm ${box_name} natpf1 "logstash,tcp,127.0.0.1,5000,,5000" 2> /dev/null
 VBoxManage controlvm ${box_name} natpf1 "logstash-http,tcp,127.0.0.1,31311,,31311" 2> /dev/null
 VBoxManage controlvm ${box_name} natpf1 "kibana,tcp,127.0.0.1,5601,,5601" 2> /dev/null
+VBoxManage controlvm ${box_name} natpf1 "discover,tcp,127.0.0.1,8000,,8000" 2> /dev/null
 
 # this command allows the docker commands to be used in the terminal
 # eval "$(docker-machine env ${box_name})"
