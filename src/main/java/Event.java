@@ -26,8 +26,8 @@ public class Event {
     private final long createdAt;
     private final long beginsAt;
     private final long endsAt;
-    private final long latitude;
-    private final long longitude;
+    private final double latitude;
+    private final double longitude;
 
     private final List<AdminPerson> admins;
     private final List<HostPerson> hosts;
@@ -77,14 +77,18 @@ public class Event {
 
     @Override
     public int hashCode() {
-        int result = name != null ? name.hashCode() : 0;
+        int result;
+        long temp;
+        result = name != null ? name.hashCode() : 0;
         result = 31 * result + (duration != null ? duration.hashCode() : 0);
         result = 31 * result + (eventID != null ? eventID.hashCode() : 0);
         result = 31 * result + (int) (createdAt ^ (createdAt >>> 32));
         result = 31 * result + (int) (beginsAt ^ (beginsAt >>> 32));
         result = 31 * result + (int) (endsAt ^ (endsAt >>> 32));
-        result = 31 * result + (int) (latitude ^ (latitude >>> 32));
-        result = 31 * result + (int) (longitude ^ (longitude >>> 32));
+        temp = Double.doubleToLongBits(latitude);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(longitude);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
         result = 31 * result + (admins != null ? admins.hashCode() : 0);
         result = 31 * result + (hosts != null ? hosts.hashCode() : 0);
         result = 31 * result + (attendees != null ? attendees.hashCode() : 0);
@@ -117,9 +121,9 @@ public class Event {
 
     public long getEndsAt() { return this.endsAt; }
 
-    public long getLongitude() { return this.longitude; }
+    public double getLongitude() { return this.longitude; }
 
-    public long getLatitude() { return this.latitude; }
+    public double getLatitude() { return this.latitude; }
 
     public List<AdminPerson> getAdmins() { return this.admins; }
 
@@ -139,8 +143,8 @@ public class Event {
         private long createdAt;
         private long beginsAt;
         private long endsAt;
-        private long latitude;
-        private long longitude;
+        private double latitude;
+        private double longitude;
 
         private List<AdminPerson> admins;
         private List<HostPerson> hosts;
@@ -264,7 +268,7 @@ public class Event {
          * @param longitude The longitude coordinate of the location
          * @return The updated EventBuilder
          */
-        public EventBuilder setCoordinates(long latitude, long longitude) {
+        public EventBuilder setCoordinates(double latitude, double longitude) {
             this.latitude = latitude;
             this.longitude = longitude;
             return this;

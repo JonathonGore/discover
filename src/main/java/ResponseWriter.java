@@ -23,8 +23,15 @@ public class ResponseWriter {
             return;
         }
 
+        // Add response header for CORS to succeed
+        t.getResponseHeaders().add("Access-Control-Allow-Origin", "*");
+
+        // Get the message from the proposed response object
         String message = response.getMessage();
+        logger.info("Responding to request with message {}.", message);
+        // Set status code and size of message we are responding with
         t.sendResponseHeaders(response.getStatusCode(), message.length());
+        // Write our response to the output stream
         OutputStream os = t.getResponseBody();
         os.write(message.getBytes());
         os.close();
