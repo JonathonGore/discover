@@ -10,13 +10,13 @@ public class DummyDataClient implements IEventDao {
      * Dummy method for testing
      * @return a list of events
      */
-    public List<Event> getEvents() {
+    public List<String> getEvents() {
         List<Event> events = new LinkedList<>();
         Event event1 = DummyEvents.getEvent(0);
         Event event2 = DummyEvents.getEvent(1);
         events.add(event1);
         events.add(event2);
-        return events;
+        return null;
     }
 
     /**

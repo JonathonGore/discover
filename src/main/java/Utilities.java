@@ -1,5 +1,6 @@
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -30,6 +31,26 @@ public class Utilities {
      */
     public static String toString(InputStream is) {
         try(java.util.Scanner s = new java.util.Scanner(is)) { return s.useDelimiter("\\A").hasNext() ? s.next() : ""; }
+    }
+
+    /**
+     * TODO: TEST
+     * Consumes a list of strings where each string is a JSON object and produces a single
+     * string that represents a JSON array of the objects.
+     * @param objs
+     * @return
+     */
+    public static String objectsToJSONArray(List<String> objs) {
+        StringBuilder sb = new StringBuilder("[");
+
+        for(int i = 0; i < objs.size(); ++i) {
+            if(i > 0) {
+                sb.append(", ");
+            }
+            sb.append(objs.get(i));
+        }
+        sb.append("]");
+        return sb.toString();
     }
 
     /**

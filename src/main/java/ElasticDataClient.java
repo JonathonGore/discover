@@ -4,9 +4,11 @@ import org.apache.logging.log4j.Logger;
 import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.get.GetResponse;
 import org.elasticsearch.action.index.IndexResponse;
+import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
+import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
 
 import java.net.InetAddress;
@@ -56,17 +58,26 @@ public class ElasticDataClient implements IEventDao {
 
     /**
      * Gets all events in ElasticSearch
-     * @return List of events
+     * @return List of events represented as strings
      */
-    public List<Event> getEvents() {
-        Event event = new Event.EventBuilder()
-                .setName("Super cool event")
-                .setEndsAt(32434242L)
-                .setBeginsAt(3423424L)
-                .setDuration("2 months").build();
+    public List<String> getEvents() {
 
-        List<Event> events =  new LinkedList<Event>();
-        events.add(event);
+        int resultCount = 0;
+        LinkedList<String> events = new LinkedList<>();
+
+        // Prepare a search for retrieving entries from elastic search
+        // Limited to 100
+        SearchResponse resp = client.prepareSearch(config.getString(ES_PREFIX + "index"))
+                .setSize(100).get(); //max of 100 hits will be returned for each scroll
+
+
+        for(SearchHit sh : resp.getHits()) {
+            events.add(sh.getSourceAsString());
+            resultCount++;
+        }
+
+        logger.info("Fetched {} entries from elasticsearch", resultCount);
+
         return events;
     }
 

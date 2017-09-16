@@ -31,7 +31,7 @@ public class EventManager {
         return event;
     }
 
-    public List<Event> getEvents() {
+    public List<String> getEvents() {
        return eventDao.getEvents();
     }
 

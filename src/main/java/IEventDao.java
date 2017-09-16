@@ -5,7 +5,7 @@ import java.util.List;
  */
 public interface IEventDao {
     // Gets all events - make sure its paginated or returns a partial response
-    List<Event> getEvents();
+    List<String> getEvents();
 
     /**
      * Gets the event with the corresponding eventId or NULL

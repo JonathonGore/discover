@@ -101,24 +101,35 @@ public class Server {
 
         /**
          * Handles a GET request for the events endpoint
-         * @return the String that is to be used as the response
+         * @return Response object that is to be used as the response
          */
         private Response handleGET(HttpExchange t) {
             Response response;
+
+            // The query provided by the request
             String query = t.getRequestURI().getQuery();
-            logger.info("Received GET request at /events");
+            logger.info("Received GET request at /events with query {}.", query );
+
+            // Create a map from the received query
             Map<String, String> values = Utilities.queryToMap(query);
-            // Check if it contains id parameter
+
+            // Check if it contains id parameter we want to provide a single
+            // event as the response.
             if(values.containsKey("id")) {
                 // For now we only want to support GET for a single id
                 String id = values.get("id");
+                // Retrieve the event for the given id
                 Event event = eventManager.getEvent(id);
+                // TODO what if this event doesn't exist
+
                 String responseMessage = gson.toJson(event, T_EVENT);
                 response = new Response(HttpStatus.SC_OK, responseMessage);
             } else {
-                // If we get here that means there was no ID provided
-                //response = gson.toJson(eventManager.getEvents(), T_LIST_OF_EVENTS);
-                response = new Response(HttpStatus.SC_BAD_REQUEST, "Specify an id in request URI");
+                // Get the events form the event manager and convert to usable JSON array.
+                List<String> events = eventManager.getEvents();
+                String arr = Utilities.objectsToJSONArray(events);
+                // TODO: Change this to rely on provide events within range of given coordinates (lat, long)
+                response = new Response(HttpStatus.SC_OK, arr);
 
             }
             logger.info("Sending response: Status: {} Message: {}", response.getStatusCode(), response.getMessage());
