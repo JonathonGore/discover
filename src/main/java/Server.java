@@ -2,7 +2,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.sun.net.httpserver.HttpExchange;
 import com.sun.net.httpserver.HttpHandler;
-import com.sun.net.httpserver.HttpServer;
+import com.sun.net.httpserver.HttpsServer;
 import com.typesafe.config.ConfigFactory;
 import org.apache.http.HttpStatus;
 import org.apache.logging.log4j.LogManager;
@@ -30,7 +30,7 @@ public class Server {
     private static Logger logger = LogManager.getLogger(Server.class);
     private static Server server = null;
     private EventManager eventManager = null;
-    private HttpServer httpServer = null;
+    private HttpsServer httpServer = null;
     private Gson gson = null;
 
     public static Server getInstance() {
@@ -47,7 +47,7 @@ public class Server {
     private void createServer() throws IOException {
         // Pull out port to be configured
         logger.info("Creating server...");
-        httpServer = HttpServer.create(new InetSocketAddress(8000), 0);
+        httpServer = HttpsServer.create(new InetSocketAddress(8000), 0);
         createEndpoints();
         httpServer.setExecutor(null); // creates a default executor
     }
