@@ -53,16 +53,16 @@ public class Server {
             // Initialize the HTTPS server
             httpsServer = HttpsServer.create(new InetSocketAddress(8000), 0);
 
-            SSLContext sslContext = SSLContext.getInstance ( "TLS" );
+            SSLContext sslContext = SSLContext.getInstance("TLS");
 
             // initialise the keystore
-            char[] password = "simulator".toCharArray();
+            char[] password = "password".toCharArray();
             KeyStore ks = KeyStore.getInstance ( "JKS" );
-            FileInputStream fis = new FileInputStream ( "lig.keystore" );
-            ks.load ( fis, password );
+            FileInputStream fis = new FileInputStream("lig.keystore");
+            ks.load (fis, password);
 
             // setup the key manager factory
-            KeyManagerFactory kmf = KeyManagerFactory.getInstance ("SunX509");
+            KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");
             kmf.init (ks, password);
 
             // setup the trust manager factory
@@ -70,7 +70,7 @@ public class Server {
             tmf.init (ks);
 
             // setup the HTTPS context and parameters
-            sslContext.init ( kmf.getKeyManagers (), tmf.getTrustManagers (), null);
+            sslContext.init (kmf.getKeyManagers (), tmf.getTrustManagers (), null);
             httpsServer.setHttpsConfigurator ( new HttpsConfigurator( sslContext ) {
                 public void configure ( HttpsParameters params )
                 {
