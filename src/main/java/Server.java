@@ -1,16 +1,17 @@
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
-import com.sun.net.httpserver.HttpExchange;
-import com.sun.net.httpserver.HttpHandler;
-import com.sun.net.httpserver.HttpsServer;
+import com.sun.net.httpserver.*;
 import com.typesafe.config.ConfigFactory;
 import org.apache.http.HttpStatus;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.net.ssl.*;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.lang.reflect.Type;
 import java.net.InetSocketAddress;
+import java.security.KeyStore;
 import java.util.List;
 import java.util.Map;
 
@@ -30,7 +31,7 @@ public class Server {
     private static Logger logger = LogManager.getLogger(Server.class);
     private static Server server = null;
     private EventManager eventManager = null;
-    private HttpsServer httpServer = null;
+    private HttpsServer httpsServer = null;
     private Gson gson = null;
 
     public static Server getInstance() {
@@ -45,22 +46,68 @@ public class Server {
      * @throws IOException
      */
     private void createServer() throws IOException {
-        // Pull out port to be configured
-        logger.info("Creating server...");
-        httpServer = HttpsServer.create(new InetSocketAddress(8000), 0);
-        createEndpoints();
-        httpServer.setExecutor(null); // creates a default executor
+        try
+        {
+            logger.info("Creating server...");
+
+            // Initialize the HTTPS server
+            httpsServer = HttpsServer.create(new InetSocketAddress(8000), 0);
+
+            SSLContext sslContext = SSLContext.getInstance ( "TLS" );
+
+            // initialise the keystore
+            char[] password = "simulator".toCharArray();
+            KeyStore ks = KeyStore.getInstance ( "JKS" );
+            FileInputStream fis = new FileInputStream ( "lig.keystore" );
+            ks.load ( fis, password );
+
+            // setup the key manager factory
+            KeyManagerFactory kmf = KeyManagerFactory.getInstance ("SunX509");
+            kmf.init (ks, password);
+
+            // setup the trust manager factory
+            TrustManagerFactory tmf = TrustManagerFactory.getInstance ("SunX509");
+            tmf.init (ks);
+
+            // setup the HTTPS context and parameters
+            sslContext.init ( kmf.getKeyManagers (), tmf.getTrustManagers (), null);
+            httpsServer.setHttpsConfigurator ( new HttpsConfigurator( sslContext ) {
+                public void configure ( HttpsParameters params )
+                {
+                    try {
+                        // initialise the SSL context
+                        SSLContext c = SSLContext.getDefault ();
+                        SSLEngine engine = c.createSSLEngine ();
+                        params.setNeedClientAuth ( false );
+                        params.setCipherSuites ( engine.getEnabledCipherSuites () );
+                        params.setProtocols ( engine.getEnabledProtocols () );
+
+                        // get the default parameters
+                        SSLParameters defaultSSLParameters = c.getDefaultSSLParameters ();
+                        params.setSSLParameters ( defaultSSLParameters );
+                    }
+                    catch (Exception ex) {
+                        logger.error("Failed to create HTTPS port");
+                    }
+                }
+            } );
+            createEndpoints();
+            httpsServer.setExecutor(null); // creates a default executor
+        }
+        catch ( Exception exception ) {
+            logger.error ( "Failed to create HTTPS server.");
+        }
     }
 
     // Starts the server
     public void start() {
-        httpServer.start();
+        httpsServer.start();
     }
 
     private void createEndpoints() {
         logger.info("Registering endpoints..");
-        httpServer.createContext("/events", new EventHandler());
-        httpServer.createContext("/test", new MyHandler());
+        httpsServer.createContext("/events", new EventHandler());
+        httpsServer.createContext("/test", new MyHandler());
     }
 
     // Constructor
