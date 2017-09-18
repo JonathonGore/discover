@@ -1,4 +1,5 @@
 import com.sun.net.httpserver.HttpExchange;
+import com.sun.net.httpserver.HttpsExchange;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -15,7 +16,8 @@ public class ResponseWriter {
     /**
      * Writes the message in response to the http address contained in t
      */
-    public static void write(HttpExchange t, Response response) throws IOException {
+    public static void write(HttpExchange ht, Response response) throws IOException {
+        HttpsExchange t = (HttpsExchange) ht;
 
         // Make sure the response is not null
         if(response == null) {

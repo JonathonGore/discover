@@ -157,6 +157,7 @@ public class Server {
 
             // The query provided by the request
             String query = t.getRequestURI().getQuery();
+            if(query == null) query = "";
             logger.info("Received GET request at /events with query {}.", query );
 
             // Create a map from the received query
