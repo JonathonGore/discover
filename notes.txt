@@ -2,3 +2,6 @@ TODO: Note in the application.conf the strange ip address, that is the address f
 host I want that to be able to use 0.0.0.0
 
 This ip can be obtained by running 'docker-machine ip discover'
+
+SSL key
+/etc/ssl

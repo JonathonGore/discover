@@ -3,3 +3,5 @@ discover.iml
 out/**
 target/**
 *.swp
+lig.keystore
+discover-app_site.*
