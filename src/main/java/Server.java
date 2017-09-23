@@ -1,6 +1,7 @@
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import com.sun.net.httpserver.*;
+import com.typesafe.config.Config;
 import com.typesafe.config.ConfigFactory;
 import org.apache.http.HttpStatus;
 import org.apache.logging.log4j.LogManager;
@@ -24,9 +25,11 @@ public class Server {
     private static final String HTTP_POST = "POST";
     private static final String HTTP_GET = "GET";
     private static final String HTTP_DELETE = "DELETE";
+    private static final String SSL_PREFIX = "ssl.";
 
     private final Type T_LIST_OF_EVENTS = new TypeToken<List<Event>>(){}.getType();
     private final Type T_EVENT = new TypeToken<Event>(){}.getType();
+    private final Config config;
 
     private static Logger logger = LogManager.getLogger(Server.class);
     private static Server server = null;
@@ -56,7 +59,7 @@ public class Server {
             SSLContext sslContext = SSLContext.getInstance("TLS");
 
             // initialise the keystore
-            char[] password = "password".toCharArray();
+            char[] password = config.getString(SSL_PREFIX + "password").toCharArray();
             KeyStore ks = KeyStore.getInstance ( "JKS" );
 	    logger.info("Trying to open file");
             FileInputStream fis = new FileInputStream("mykeystore.jks");
@@ -117,6 +120,7 @@ public class Server {
 
         // Pass in the config. This can eventually be changed to have different files
         eventManager = new EventManager(new ElasticDataClient(ConfigFactory.load()));
+        config = ConfigFactory.load();
 
         gson = new Gson();
         // Try to create the server otherwise throw
