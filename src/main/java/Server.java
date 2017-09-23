@@ -61,9 +61,7 @@ public class Server {
             // initialise the keystore
             char[] password = config.getString(SSL_PREFIX + "password").toCharArray();
             KeyStore ks = KeyStore.getInstance ( "JKS" );
-	    logger.info("Trying to open file");
             FileInputStream fis = new FileInputStream("mykeystore.jks");
-	    logger.info("File opened successfully");
             ks.load (fis, password);
 
             // setup the key manager factory

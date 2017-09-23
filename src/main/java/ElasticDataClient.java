@@ -44,7 +44,16 @@ public class ElasticDataClient implements IEventDao {
                 .put("cluster.name", config.getString(ES_PREFIX + "cluster")).build();
 
         try {
-            InetAddress address = InetAddress.getByName(config.getString(ES_PREFIX + "host"));
+            String host;
+            // Check if the env variable DISC_ENV is set
+            // This for selecting correct host for running in intellij/docker
+            if (System.getenv("DISC_ES_HOST") == null) {
+                host = config.getString(ES_PREFIX + "host");
+            } else {
+
+                host = System.getenv("DISC_ES_HOST");
+            }
+            InetAddress address = InetAddress.getByName(host);
             client = new PreBuiltTransportClient(settings)
                     .addTransportAddress(new InetSocketTransportAddress(address, config.getInt(ES_PREFIX + "port")));
             logger.info("Successfully created transport client");
