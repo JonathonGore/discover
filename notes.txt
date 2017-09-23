@@ -8,3 +8,7 @@ SSL key
 
 Note: It appears that using the hostname as 'elasticsearch' works for connectivity from inside a docker container...
 	  However this will not work from inside intellij as this hostname is configured in the docker-compose file.
+
+When creating a self signed ssl cert you must specify first and last name to be 'localhost'.
+Then once the cert is created and the server is running you must first visit https://localhost:8000/events to allow
+your browser to accept the cert

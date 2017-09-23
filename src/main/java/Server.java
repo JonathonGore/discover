@@ -62,32 +62,31 @@ public class Server {
             char[] password = config.getString(SSL_PREFIX + "password").toCharArray();
             KeyStore ks = KeyStore.getInstance ( "JKS" );
             FileInputStream fis = new FileInputStream("mykeystore.jks");
-            ks.load (fis, password);
+            ks.load(fis, password);
 
             // setup the key manager factory
             KeyManagerFactory kmf = KeyManagerFactory.getInstance("SunX509");
-            kmf.init (ks, password);
+            kmf.init(ks, password);
 
             // setup the trust manager factory
-            TrustManagerFactory tmf = TrustManagerFactory.getInstance ("SunX509");
-            tmf.init (ks);
+            TrustManagerFactory tmf = TrustManagerFactory.getInstance("SunX509");
+            tmf.init(ks);
 
             // setup the HTTPS context and parameters
-            sslContext.init (kmf.getKeyManagers (), tmf.getTrustManagers (), null);
+            sslContext.init(kmf.getKeyManagers(), tmf.getTrustManagers(), null);
             httpsServer.setHttpsConfigurator ( new HttpsConfigurator( sslContext ) {
-                public void configure ( HttpsParameters params )
-                {
+                public void configure (HttpsParameters params) {
                     try {
                         // initialise the SSL context
-                        SSLContext c = SSLContext.getDefault ();
-                        SSLEngine engine = c.createSSLEngine ();
-                        params.setNeedClientAuth ( false );
-                        params.setCipherSuites ( engine.getEnabledCipherSuites () );
-                        params.setProtocols ( engine.getEnabledProtocols () );
+                        SSLContext c = SSLContext.getDefault();
+                        SSLEngine engine = c.createSSLEngine();
+                        params.setNeedClientAuth(false);
+                        params.setCipherSuites(engine.getEnabledCipherSuites());
+                        params.setProtocols(engine.getEnabledProtocols());
 
                         // get the default parameters
-                        SSLParameters defaultSSLParameters = c.getDefaultSSLParameters ();
-                        params.setSSLParameters ( defaultSSLParameters );
+                        SSLParameters defaultSSLParameters = c.getDefaultSSLParameters();
+                        params.setSSLParameters(defaultSSLParameters);
                     }
                     catch (Exception ex) {
                         logger.error("Failed to create HTTPS port");
