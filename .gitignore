@@ -2,6 +2,8 @@
 discover.iml
 out/**
 target/**
+certs/**
 *.swp
 lig.keystore
+mykeystore.jks
 discover-app_site.*
