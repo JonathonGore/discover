@@ -8,7 +8,7 @@ public class DummyEvents {
             .setBeginsAt(0L)
             .setEndsAt(0L)
             .setName("First Event")
-            .setDuration("1 Hour")
+            .setDescription("1 Hour")
             .setCreatedAt(Utilities.getCurrentTime())
             .setCoordinates(0L, 0L).build();
     private static final Event event1 = new Event.EventBuilder()
@@ -16,7 +16,7 @@ public class DummyEvents {
             .setBeginsAt(0L)
             .setEndsAt(0L)
             .setName("Second Event")
-            .setDuration("2 Hours")
+            .setDescription("2 Hours")
             .setCreatedAt(Utilities.getCurrentTime())
             .setCoordinates(0L, 0L).build();
 

@@ -11,7 +11,7 @@ import java.util.List;
  *
  * EventBuilder eb = new EventBuild();
  * Event e = eb.setName("Awesome Party")
- *             .setDuration("42 Years")
+ *             .setdescription("42 Years")
  *             .buildEvent();
  *
  */
@@ -20,7 +20,7 @@ public class Event {
     private static final Type T_EVENT = new TypeToken<Event>(){}.getType();
 
     private String name;
-    private String duration;
+    private String description;
     private String eventID;
 
     private final long createdAt;
@@ -42,7 +42,7 @@ public class Event {
     private Event(EventBuilder eb) {
 
         this.name = eb.name;
-        this.duration = eb.duration;
+        this.description = eb.description;
         this.eventID = eb.eventID;
         this.createdAt = eb.createdAt;
         this.beginsAt = eb.beginsAt;
@@ -67,7 +67,7 @@ public class Event {
         if (latitude != event.latitude) return false;
         if (longitude != event.longitude) return false;
         if (name != null ? !name.equals(event.name) : event.name != null) return false;
-        if (duration != null ? !duration.equals(event.duration) : event.duration != null) return false;
+        if (description != null ? !description.equals(event.description) : event.description != null) return false;
         if (eventID != null ? !eventID.equals(event.eventID) : event.eventID != null) return false;
         if (admins != null ? !admins.equals(event.admins) : event.admins != null) return false;
         if (hosts != null ? !hosts.equals(event.hosts) : event.hosts != null) return false;
@@ -80,7 +80,7 @@ public class Event {
         int result;
         long temp;
         result = name != null ? name.hashCode() : 0;
-        result = 31 * result + (duration != null ? duration.hashCode() : 0);
+        result = 31 * result + (description != null ? description.hashCode() : 0);
         result = 31 * result + (eventID != null ? eventID.hashCode() : 0);
         result = 31 * result + (int) (createdAt ^ (createdAt >>> 32));
         result = 31 * result + (int) (beginsAt ^ (beginsAt >>> 32));
@@ -111,7 +111,7 @@ public class Event {
 
     public String getName() { return this.name; }
 
-    public String getDuration() { return this.duration; }
+    public String getDescription() { return this.description; }
 
     public String getEventID() { return this.eventID; }
 
@@ -138,7 +138,7 @@ public class Event {
     public static class EventBuilder {
 
         private String name;
-        private String duration;
+        private String description;
         private String eventID;
         private long createdAt;
         private long beginsAt;
@@ -161,7 +161,7 @@ public class Event {
         public EventBuilder(Event event) {
             // Use getters to update EventBuilder with all fields from the event..
             this.name = event.getName();
-            this.duration = event.getDuration();
+            this.description = event.getDescription();
             this.eventID = event.getEventID();
             this.createdAt = event.getCreatedAt();
             this.beginsAt = event.getBeginsAt();
@@ -183,12 +183,12 @@ public class Event {
         }
 
         /**
-         * Sets the duration for this event in a human readable form i.e 3 hours, 1 day ... etc.
-         * @param duration The duration of this event.
+         * Sets the description for this event in a human readable form i.e 3 hours, 1 day ... etc.
+         * @param description The description of this event.
          * @return The updated EventBuilder
          */
-        public EventBuilder setDuration(String duration) {
-            this.duration = duration;
+        public EventBuilder setDescription(String description) {
+            this.description = description;
             return this;
         }
 

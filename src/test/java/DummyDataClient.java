@@ -29,7 +29,7 @@ public class DummyDataClient implements IEventDao {
                 .setBeginsAt(0L)
                 .setEndsAt(0L)
                 .setName("Event")
-                .setDuration("2 Hours")
+                .setDescription("2 Hours")
                 .setCreatedAt(Utilities.getCurrentTime())
                 .setCoordinates(0L, 0L).build();
         return event;
