@@ -19,6 +19,10 @@ public class DummyDataClient implements IEventDao {
         return null;
     }
 
+    public List<String> searchEvents(String q) {
+        return null;
+    }
+
     /**
      * Dummy IMPL for testing
      * Gets the event with the corresponding eventId or NULL

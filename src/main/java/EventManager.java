@@ -31,6 +31,8 @@ public class EventManager {
         return event;
     }
 
+    public List<String> searchEvents(String query) { return eventDao.searchEvents(query); }
+
     public List<String> getEvents() {
        return eventDao.getEvents();
     }

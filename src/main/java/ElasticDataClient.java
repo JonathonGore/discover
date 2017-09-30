@@ -8,6 +8,7 @@ import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.client.transport.TransportClient;
 import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.transport.InetSocketTransportAddress;
+import org.elasticsearch.index.query.QueryBuilder;
 import org.elasticsearch.search.SearchHit;
 import org.elasticsearch.transport.client.PreBuiltTransportClient;
 
@@ -15,6 +16,9 @@ import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.LinkedList;
 import java.util.List;
+
+import static org.elasticsearch.index.query.QueryBuilders.matchQuery;
+import static org.elasticsearch.index.query.QueryBuilders.multiMatchQuery;
 
 /**
  * Created by jack on 2017-04-19.
@@ -63,6 +67,32 @@ public class ElasticDataClient implements IEventDao {
         // TODO: Figure this out
         // This needs to happen on shutdown but where??
         //client.close();
+    }
+
+
+    /**
+     * Searches events matching the query
+     * @return List of events represented as strings
+     */
+    public List<String> searchEvents(String query) {
+
+        int resultCount = 0;
+        LinkedList<String> events = new LinkedList<>();
+
+        // Create the query
+        QueryBuilder qb = multiMatchQuery(query, "description", "name");
+
+        SearchResponse resp = client.prepareSearch(config.getString(ES_PREFIX + "index")) //
+                .setQuery(qb).setSize(100).get();
+
+        for(SearchHit sh : resp.getHits()) {
+            events.add(sh.getSourceAsString());
+            resultCount++;
+        }
+
+        logger.info("Fetched {} entries from elasticsearch", resultCount);
+
+        return events;
     }
 
     /**

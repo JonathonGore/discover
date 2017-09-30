@@ -7,6 +7,8 @@ public interface IEventDao {
     // Gets all events - make sure its paginated or returns a partial response
     List<String> getEvents();
 
+    public List<String> searchEvents(String query);
+
     /**
      * Gets the event with the corresponding eventId or NULL
      * if it doesn't exist.

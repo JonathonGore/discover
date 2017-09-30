@@ -175,6 +175,11 @@ public class Server {
 
                 String responseMessage = gson.toJson(event, T_EVENT);
                 response = new Response(HttpStatus.SC_OK, responseMessage);
+            } else if(values.containsKey("query")) {
+                String q = values.get("query");
+                List<String> events = eventManager.searchEvents(q);
+                String arr = Utilities.objectsToJSONArray(events);
+                response = new Response(HttpStatus.SC_OK, arr);
             } else {
                 // Get the events form the event manager and convert to usable JSON array.
                 List<String> events = eventManager.getEvents();
